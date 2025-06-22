@@ -39,6 +39,6 @@ public class Product {
     }
 
     public String toString() {
-        return String.format("%s [%s] : %d unidades disponibles.", name, sku, quantity);
+        return String.format("Producto %s [%s] tiene: %d unidades disponibles.", name, sku, quantity);
     }
 }

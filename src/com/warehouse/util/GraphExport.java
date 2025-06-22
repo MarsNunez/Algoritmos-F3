@@ -3,32 +3,37 @@ package com.warehouse.util;
 import com.warehouse.graph.WarehouseGraph;
 import com.warehouse.graph.WarehouseNode;
 
-public final class GraphExport {
-
-    /** Convierte el grafo a texto DOT (Graphviz). */
+public class GraphExport {
     public static String toDot(WarehouseGraph g) {
         StringBuilder sb = new StringBuilder("digraph G {\n")
-                .append("  rankdir=LR;\n"); // izquierda→derecha
-        for (WarehouseNode n : g.getNodes()) {
+                .append("  rankdir=LR;\n")
+                .append("  node [shape=record, style=filled, fillcolor=lightblue];\n\n");
+
+        // Nodos con formato mejorado
+        for (WarehouseNode node : g.getNodes()) {
             sb.append("  ")
-                    .append(n.getId())
-                    .append(" [label=\"")
-                    .append(n.getLabel())
-                    .append("\"];\n");
+                    .append(node.getId())
+                    .append(" [label=\"{")
+                    .append(node.getLabel())
+                    .append("|")
+                    .append(node.getFormattedProducts().replace("\n", "|")) // Formato para record
+                    .append("}\", fontsize=10];\n\n");
         }
-        for (WarehouseNode n : g.getNodes()) {
-            n.getEdges().forEach((dst, w) ->
-                    sb.append("  ")
-                            .append(n.getId())
-                            .append(" -> ")
-                            .append(dst.getId())
-                            .append(" [label=\"")
-                            .append(w)
-                            .append("\"];\n"));
+
+        // Conexiones
+        for (WarehouseNode node : g.getNodes()) {
+            node.getEdges().forEach((destino, peso) -> {
+                sb.append("  ")
+                        .append(node.getId())
+                        .append(" -> ")
+                        .append(destino.getId())
+                        .append(" [label=\"")
+                        .append(peso)
+                        .append("\", fontsize=8];\n");
+            });
         }
+
         sb.append("}\n");
         return sb.toString();
     }
-
-    private GraphExport() {} // utilidad estática
 }
